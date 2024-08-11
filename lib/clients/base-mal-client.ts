@@ -3,14 +3,19 @@ import { type BaseBody, BaseClient } from '@dvcol/base-http-client';
 import { injectCorsProxyPrefix, parseBody, parseUrl, patchResponse } from '@dvcol/base-http-client/utils/client';
 import { BaseApiHeaders, BaseHeaderContentType } from '@dvcol/base-http-client/utils/http';
 
+import { HttpMethod } from '@dvcol/common-utils';
+
+import type { RecursiveRecord } from '@dvcol/common-utils';
+
 import type { MalApi } from '~/api/mal-api.endpoints';
 
 import type {
   IMalApi,
+  MalApiPaginatedData,
   MalApiParam,
   MalApiQuery,
+  MalApiRawPaginatedData,
   MalApiResponse,
-  MalApiResponseData,
   MalApiTemplate,
   MalClientOptions,
   MalClientSettings,
@@ -25,8 +30,26 @@ import { MalExpiredTokenError, MalInvalidParameterError } from '~/models/mal-err
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging  -- To allow type extension
 export interface BaseMalClient extends MalApi {}
 
-const parseResponse = (result: MalApiResponseData) => {
-  return result.paging ? { data: result.data, pagination: result.paging } : result.data;
+// "https://api.myanimelist.net/v2/anime/search?offset=2&status=not_yet_aired&limit=4&fields=alternative_titles";
+
+const parsePagingLinks = (link: string): { offset: number; limit: number } => {
+  const params = new URLSearchParams(link.split('?')[1] ?? link);
+  return {
+    offset: Number(params.get('offset')),
+    limit: Number(params.get('limit')),
+  };
+};
+
+const isPagedData = <T extends RecursiveRecord = unknown>(data: T | MalApiRawPaginatedData<T>): data is MalApiRawPaginatedData<T> => 'paging' in data;
+
+const parseResponse = <T extends RecursiveRecord = unknown>(response: T | MalApiRawPaginatedData<T>) => {
+  if (!isPagedData(response)) return response;
+  const result: Partial<MalApiPaginatedData> = {
+    data: response.data,
+  };
+  if (response.paging.previous) result.pagination.previous = { ...parsePagingLinks(response.paging.previous), link: response.paging.previous };
+  if (response.paging.next) result.pagination.next = { ...parsePagingLinks(response.paging.next), link: response.paging.next };
+  return result;
 };
 
 const patchMalResponse = <T extends Response>(response: T): T => patchResponse(response, parseResponse);
@@ -65,7 +88,7 @@ export class BaseMalClient extends BaseClient<MalApiQuery, MalApiResponse, MalCl
   protected _parseHeaders<T extends MalApiParam = MalApiParam>(template: MalApiTemplate<T>): HeadersInit {
     const headers: HeadersInit = {
       [BaseApiHeaders.UserAgent]: this.settings.useragent,
-      [BaseApiHeaders.ContentType]: BaseHeaderContentType.Json,
+      [BaseApiHeaders.ContentType]: template.method === HttpMethod.POST ? BaseHeaderContentType.FormUrlEncoded : BaseHeaderContentType.Json,
       [MalApiHeader.MalClientId]: this.settings.client_id,
     };
 
@@ -122,7 +145,12 @@ export class BaseMalClient extends BaseClient<MalApiQuery, MalApiResponse, MalCl
    * @protected
    */
   // eslint-disable-next-line class-methods-use-this -- implemented from abstract class
-  protected _parseResponse(response: MalApiResponse<MalApiResponseData>): MalApiResponse {
+  protected _parseResponse<T extends RecursiveRecord = unknown>(
+    response: MalApiResponse<T> | MalApiResponse<MalApiRawPaginatedData<T>>,
+  ): MalApiResponse {
+    if (response.status === 401 && response.headers.get(MalApiHeader.MalAuthenticate)?.includes('token expired')) {
+      throw new MalExpiredTokenError('OAuth required: access_token has expired', response);
+    }
     if (!response.ok || response.status >= 400) throw response;
 
     const parsed: MalApiResponse = patchMalResponse(response);

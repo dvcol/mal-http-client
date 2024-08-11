@@ -35,8 +35,14 @@ export class MalPollingExpiredError extends Error {
 }
 
 export class MalExpiredTokenError extends Error {
-  constructor(message?: string) {
+  /**
+   * Inner error that this error wraps.
+   */
+  readonly error?: Error | Response;
+
+  constructor(message?: string, error?: Error | Response) {
     super(message);
     this.name = MalErrorTypes.MalExpiredTokenError;
+    this.error = error;
   }
 }

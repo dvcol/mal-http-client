@@ -54,7 +54,10 @@ const malClientSettings: MalClientSettings = {
   client_id: '<Your mal ID>',
   client_secret: '<Your mal secret>',
   redirect_uri: '<Your mal redirect uri>',
+  
   endpoint: Config.endpoint,
+  TokenTTL: Config.TokenTTL,
+  RefreshTokenTTL: Config.RefreshTokenTTL,
 
   useragent: '<Your user Agent>',
   corsProxy: '<Optional cors Proxy>',

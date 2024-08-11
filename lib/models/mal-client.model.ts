@@ -24,26 +24,44 @@ export type ApiVersions = (typeof ApiVersion)[keyof typeof ApiVersion];
  * @see [documentation]{@link https://myanimelist.net/apiconfig/references/api/v2}
  */
 export type MalClientSettings = BaseSettings<{
-  /** Get this from your app settings. */
+  /** The client ID you received from MyAnimeList when you registered your application. */
   client_id: string;
-  /** Get this from your app settings. */
+  /** The client secret you received from MyAnimeList when you registered your application. */
   client_secret: string;
   /** URI specified in your app settings. */
   redirect_uri?: string;
 
   /** The consumer client identifier */
   useragent: string;
+
+  /** The access token lifetime in seconds */
+  TokenTTL: number;
+  /** The refresh token lifetime in seconds */
+  RefreshTokenTTL: number;
 }>;
 
 export type MalApiQuery<T = unknown> = BaseQuery<BaseRequest, T>;
 
 export type MalApiResponse<T = unknown> = ResponseOrTypedResponse<T>;
 
-export type MalApiResponseData<T = unknown> = {
+export type MalApiRawPaginatedData<T = unknown> = {
   data: T;
   paging: {
     previous?: string;
     next?: string;
+  };
+};
+
+export type MalApiPagination = {
+  offset: number;
+  limit: number;
+};
+
+export type MalApiPaginatedData<T = unknown> = {
+  data: T;
+  pagination: {
+    previous?: MalApiPagination & { link: string };
+    next?: MalApiPagination & { link: string };
   };
 };
 
@@ -53,6 +71,7 @@ export type MalApiParam = RecursiveRecord;
 
 export const MalApiHeader = {
   MalClientId: 'X-MAL-CLIENT-ID',
+  MalAuthenticate: 'WWW-Authenticate',
 } as const;
 
 export type MalApiHeaders = (typeof MalApiHeader)[keyof typeof MalApiHeader];
@@ -68,10 +87,10 @@ export type MalAuthTypes = (typeof MalAuthType)[keyof typeof MalAuthType];
  * Represents options that can be used in a Mal API template.
  */
 export type MalApiTemplateOptions<T extends string | number | symbol = string> = BaseTemplateOptions<T, boolean> & {
+  /** The API version to use */
+  version: ApiVersions;
   /** If the method requires authentication */
   auth?: MalAuthTypes | false;
-  /** The API version to use */
-  version?: ApiVersions;
   /** If the method supports/requires pagination */
   pagination?: boolean;
   /** If the method supports/requires nsfw filters */
