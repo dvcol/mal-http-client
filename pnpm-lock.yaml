@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@dvcol/base-http-client':
-        specifier: ^1.11.0
-        version: 1.11.0
+        specifier: ^1.12.0
+        version: 1.12.0
       '@dvcol/common-utils':
         specifier: ^1.10.0
         version: 1.10.0
@@ -194,8 +194,8 @@ packages:
     resolution: {integrity: sha512-tpyc+7i6bPG9mvaBbtKUeghfyZSDgWquIDfMgqYtTbmZ9Y9VzEm2je9EYcQ0aoz5o7NvGS+rcDec93yO08MHYA==}
     engines: {node: '>=v18'}
 
-  '@dvcol/base-http-client@1.11.0':
-    resolution: {integrity: sha512-lFiN5Rp/MknDajA0lKb9ixPIhiJ2ifnan8IuAO3oHwPeUg7M5xkkKwXGCUhx5+WDaUl/0Xv/ntDkoJqfiftV9A==}
+  '@dvcol/base-http-client@1.12.0':
+    resolution: {integrity: sha512-Acs5RL2OrrHPYlHYHAvzr7WhO+mNyN9iMa1AjUkkIzYlSQwiszuw4EShtEPsEgx5pCEDAC1ysFzNLQTGdB9JOA==}
     engines: {node: '>=20', pnpm: '>= 8'}
 
   '@dvcol/common-utils@1.10.0':
@@ -3398,7 +3398,7 @@ snapshots:
       '@types/conventional-commits-parser': 5.0.0
       chalk: 5.3.0
 
-  '@dvcol/base-http-client@1.11.0':
+  '@dvcol/base-http-client@1.12.0':
     dependencies:
       '@dvcol/common-utils': 1.10.0
 

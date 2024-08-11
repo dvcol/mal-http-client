@@ -11,6 +11,7 @@ export type IMalClientAuthentication = {
   created?: number;
   expires?: number;
   state?: string;
+  code?: string;
 };
 
 const isToken = (token: MalAuthenticationToken | IMalClientAuthentication): token is MalAuthenticationToken => 'token_type' in token;
@@ -21,8 +22,12 @@ export class MalClientAuthentication implements IMalClientAuthentication {
   created: number;
   expires: number;
   state?: string;
+  code?: string;
 
-  constructor(authentication: IMalClientAuthentication | MalAuthenticationToken, state?: string) {
+  constructor(
+    authentication: IMalClientAuthentication | MalAuthenticationToken,
+    { state, code }: Pick<IMalClientAuthentication, 'state' | 'code'> = {},
+  ) {
     this.refresh_token = authentication.refresh_token;
     this.access_token = authentication.access_token;
 
@@ -30,16 +35,22 @@ export class MalClientAuthentication implements IMalClientAuthentication {
       this.created = Date.now();
       this.expires = this.created + authentication.expires_in * 1000;
       this.state = state;
+      this.code = code;
     } else {
       this.created = authentication.created;
       this.expires = authentication.expires;
       this.state = authentication.state ?? state;
+      this.code = authentication.code;
     }
   }
 
-  isExpired(): boolean {
-    if (this.expires === undefined) return false;
-    return this.expires < Date.now();
+  static isExpired(expires: number): boolean {
+    if (expires === undefined) return false;
+    return expires < Date.now();
+  }
+
+  isExpired(expires = this.expires): boolean {
+    return MalClientAuthentication.isExpired(expires);
   }
 }
 
@@ -104,3 +115,9 @@ export type MalTokenRefreshRequest = {
   /** Value MUST be set to “refresh_token”. */
   grant_type?: 'refresh_token';
 };
+
+export type MalAuthorizeQuery = Partial<Omit<MalAuthorizeRequest, 'client_id' | 'response_type'>> & {
+  redirect?: RequestRedirect;
+};
+
+export type MalTokenExchangeQuery = Partial<Omit<MalTokenExchangeRequest, 'client_id' | 'client_secret' | 'grant_type'>>;

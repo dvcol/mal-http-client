@@ -71,7 +71,6 @@ export type MalApiParam = RecursiveRecord;
 
 export const MalApiHeader = {
   MalClientId: 'X-MAL-CLIENT-ID',
-  MalAuthenticate: 'WWW-Authenticate',
 } as const;
 
 export type MalApiHeaders = (typeof MalApiHeader)[keyof typeof MalApiHeader];

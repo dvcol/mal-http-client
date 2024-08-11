@@ -24,7 +24,7 @@ import type {
 import { type IMalClientAuthentication, MalClientAuthentication } from '~/models/mal-authentication.model';
 import { MalApiHeader, MalAuthType } from '~/models/mal-client.model';
 
-import { MalExpiredTokenError, MalInvalidParameterError } from '~/models/mal-error.model';
+import { MalExpiredTokenError, MalInvalidParameterError, MalRateLimitError } from '~/models/mal-error.model';
 
 /** Needed to type Object assignment */
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging  -- To allow type extension
@@ -148,9 +148,10 @@ export class BaseMalClient extends BaseClient<MalApiQuery, MalApiResponse, MalCl
   protected _parseResponse<T extends RecursiveRecord = unknown>(
     response: MalApiResponse<T> | MalApiResponse<MalApiRawPaginatedData<T>>,
   ): MalApiResponse {
-    if (response.status === 401 && response.headers.get(MalApiHeader.MalAuthenticate)?.includes('token expired')) {
+    if (response.status === 401 && response.headers.get(BaseApiHeaders.Authenticate)?.includes('token expired')) {
       throw new MalExpiredTokenError('OAuth required: access_token has expired', response);
     }
+    if (response.status === 429) throw new MalRateLimitError(response.statusText, response);
     if (!response.ok || response.status >= 400) throw response;
 
     const parsed: MalApiResponse = patchMalResponse(response);

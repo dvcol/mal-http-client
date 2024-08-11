@@ -4,6 +4,8 @@ export const MalErrorTypes = {
   MalInvalidParameterError: 'MalInvalidParameterError',
   MalPollingExpiredError: 'MalPollingExpiredError',
   MalExpiredTokenError: 'MalExpiredTokenError',
+  MalRateLimitError: 'MalRateLimitError',
+  MalInvalidCsrfError: 'MalInvalidCsrfError',
 };
 
 export class MalValidationError extends Error {
@@ -44,5 +46,29 @@ export class MalExpiredTokenError extends Error {
     super(message);
     this.name = MalErrorTypes.MalExpiredTokenError;
     this.error = error;
+  }
+}
+
+export class MalRateLimitError extends Error {
+  /**
+   * Inner error that this error wraps.
+   */
+  readonly error?: Error | Response;
+
+  constructor(message?: string, error?: Error | Response) {
+    super(message);
+    this.name = MalErrorTypes.MalRateLimitError;
+    this.error = error;
+  }
+}
+
+export class MalInvalidCsrfError extends Error {
+  readonly state?: string;
+  readonly expected?: string;
+  constructor({ state, expected }: { state?: string; expected?: string } = {}) {
+    super(`Invalid CSRF (State): expected '${expected}', but received ${state}`);
+    this.name = MalErrorTypes.MalInvalidCsrfError;
+    this.state = state;
+    this.expected = expected;
   }
 }
