@@ -44,6 +44,11 @@ export type MalApiQuery<T = unknown> = BaseQuery<BaseRequest, T>;
 
 export type MalApiResponse<T = unknown> = ResponseOrTypedResponse<T>;
 
+export type MalApiResponseErrorData = {
+  message: string;
+  error: string;
+};
+
 export type MalApiRawPaginatedData<T = unknown> = {
   data: T;
   paging: {
@@ -53,7 +58,9 @@ export type MalApiRawPaginatedData<T = unknown> = {
 };
 
 export type MalApiPagination = {
+  /** Default: 0 */
   offset: number;
+  /** Default: 100 */
   limit: number;
 };
 
@@ -64,6 +71,13 @@ export type MalApiPaginatedData<T = unknown> = {
     next?: MalApiPagination & { link: string };
   };
 };
+
+export type MalAnimeFields<T extends RecursiveRecord> =
+  | string
+  | (keyof T)[]
+  | Partial<{
+      [K in keyof T]: string | (keyof T[K])[];
+    }>;
 
 export type MalClientOptions = BaseOptions<MalClientSettings, MalApiResponse>;
 
@@ -76,8 +90,9 @@ export const MalApiHeader = {
 export type MalApiHeaders = (typeof MalApiHeader)[keyof typeof MalApiHeader];
 
 export const MalAuthType = {
-  MainAuth: 'main_auth',
-  ClientAuth: 'client_auth',
+  Main: 'main_auth',
+  Client: 'client_auth',
+  Both: 'both_auth',
 } as const;
 
 export type MalAuthTypes = (typeof MalAuthType)[keyof typeof MalAuthType];
@@ -91,7 +106,14 @@ export type MalApiTemplateOptions<T extends string | number | symbol = string> =
   /** If the method requires authentication */
   auth?: MalAuthTypes | false;
   /** If the method supports/requires pagination */
-  pagination?: boolean;
+  pagination?:
+    | {
+        /** The minimum value */
+        offset?: number;
+        /** The maximum value **/
+        limit?: number;
+      }
+    | false;
   /** If the method supports/requires nsfw filters */
   nsfw?: boolean;
 };

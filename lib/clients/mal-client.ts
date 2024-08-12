@@ -7,6 +7,7 @@ import type { IMalClientAuthentication, MalAuthorizeQuery, MalTokenExchangeQuery
 import type { IMalApi, MalClientOptions } from '~/models/mal-client.model';
 
 import { minimalMalApi } from '~/api/mal-minimal-api.endpoints';
+
 import { BaseMalClient } from '~/clients/base-mal-client';
 import { MalClientAuthentication } from '~/models/mal-authentication.model';
 import { MalInvalidCsrfError, MalInvalidParameterError } from '~/models/mal-error.model';

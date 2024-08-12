@@ -5,8 +5,7 @@ import { BaseApiHeaders, BaseHeaderContentType } from '@dvcol/base-http-client/u
 
 import { HttpMethod } from '@dvcol/common-utils';
 
-import type { RecursiveRecord } from '@dvcol/common-utils';
-
+import type { RecursiveRecord } from '@dvcol/common-utils/common/models';
 import type { MalApi } from '~/api/mal-api.endpoints';
 
 import type {
@@ -92,11 +91,11 @@ export class BaseMalClient extends BaseClient<MalApiQuery, MalApiResponse, MalCl
       [MalApiHeader.MalClientId]: this.settings.client_id,
     };
 
-    if (template.opts?.auth === MalAuthType.ClientAuth) {
+    if (template.opts?.auth === MalAuthType.Main) {
       if (!this.auth.access_token) throw new MalInvalidParameterError('OAuth required: access_token is missing');
       else if (this.auth.isExpired()) throw new MalExpiredTokenError('OAuth required: access_token has expired');
-      else headers[BaseApiHeaders.Authorization] = `Bearer ${this.auth.access_token}`;
     }
+    if (template.opts?.auth && this.auth.access_token) headers[BaseApiHeaders.Authorization] = `Bearer ${this.auth.access_token}`;
 
     return headers;
   }
@@ -116,6 +115,7 @@ export class BaseMalClient extends BaseClient<MalApiQuery, MalApiResponse, MalCl
    * @throws {Error} Throws an error if mandatory parameters are missing or if a filter is not supported.
    */
   protected _parseUrl<T extends MalApiParam = MalApiParam>(template: MalApiTemplate<T>, params: T): URL {
+    if (template.opts?.version && !template.url.startsWith(`/${template.opts.version}`)) template.url = `/${template.opts.version}${template.url}`;
     const _template = injectCorsProxyPrefix(template, this.settings);
     return parseUrl<T>(_template, params, this.settings.endpoint);
   }
