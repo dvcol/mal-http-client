@@ -1,4 +1,4 @@
-import type { MalAnimeFields, MalApiPagination } from '~/models/mal-client.model';
+import type { MalAnimeFields, MalApiPaginatedData, MalApiPagination } from '~/models/mal-client.model';
 
 export const NsfwType = {
   /** This work is safe for work */
@@ -16,7 +16,7 @@ export const NsfwType = {
  */
 export type NsfwTypes = (typeof NsfwType)[keyof typeof NsfwType];
 
-export type MalAnimeMainPicture = {
+export type MalAnimePicture = {
   medium: string;
   large?: string;
 };
@@ -86,9 +86,13 @@ export type MalAnimeMyListStatus = {
 };
 
 export const MalAnimeSeason = {
+  /** January, February, March */
   Winter: 'winter',
+  /** April, May, June */
   Spring: 'spring',
+  /** July, August, September */
   Summer: 'summer',
+  /** October, November, December */
   Fall: 'fall',
 } as const;
 
@@ -155,7 +159,7 @@ export type MalAnimeStudio = {
 export type MalAnime = {
   id: number;
   title: string;
-  main_picture?: MalAnimeMainPicture;
+  main_picture?: MalAnimePicture;
   alternative_titles?: MalAnimeAlternativeTitles;
   start_date?: string;
   end_date?: string;
@@ -197,6 +201,132 @@ export type MalAnime = {
 
 export type MalAnimeListRequest = {
   q: string;
-  fields?: MalAnimeFields<MalAnime>;
   nsfw?: boolean;
+  fields?: MalAnimeFields<MalAnime>;
+} & MalApiPagination;
+
+export type MalAnimeListResponse = MalApiPaginatedData<{ node: MalAnime }>;
+
+export const MalRelationType = {
+  Sequel: 'sequel',
+  Prequel: 'prequel',
+  AlternativeSetting: 'alternative_setting',
+  AlternativeVersion: 'alternative_version',
+  SideStory: 'side_story',
+  ParentStory: 'parent_story',
+  Summary: 'summary',
+  FullStory: 'full_story',
+} as const;
+
+export type MalRelationTypes = (typeof MalRelationType)[keyof typeof MalRelationType];
+
+export type MalRelatedAnime = {
+  node: MalAnime;
+  /**
+   * The type of the relationship between this work and related work
+   */
+  relation_type: MalRelationTypes;
+  /** The format of relation_type for human like "Alternative version". */
+  relation_type_formatted: string;
+};
+
+export type MalRelatedManga = {
+  node: MalAnime;
+  /**
+   * The type of the relationship between this work and related work
+   */
+  relation_type: MalRelationTypes;
+  /** The format of relation_type for human like "Alternative version". */
+  relation_type_formatted: string;
+};
+
+export type MalAnimeRecommendation = {
+  node: MalAnime;
+  num_recommendations: number;
+};
+
+export type MalAnimeStatistics = {
+  num_list_users: number;
+  status: Record<MalAnimeListStatuses, number>;
+};
+
+export type MalAnimeDetails = MalAnime & {
+  pictures?: MalAnimePicture[];
+  /**
+   * The API strips BBCode tags from the result.
+   *
+   * You cannot contain this field in a list.
+   */
+  background?: string;
+  related_anime?: MalRelatedAnime[];
+  related_manga?: MalRelatedManga[];
+  recommendations?: MalAnimeRecommendation[];
+  statistics?: MalAnimeStatistics;
+};
+
+export type MalAnimeDetailsRequest = {
+  id: string | number;
+  fields?: MalAnimeFields<MalAnimeDetails>;
+};
+
+export type MalAnimeRanking = {
+  /** Current rank of the anime. */
+  rank: number;
+  /** Previous rank of the anime. */
+  previous_rank?: number;
+};
+
+export const MalAnimeRankingType = {
+  /** Top Anime Series */
+  All: 'all',
+  /** Top Airing Anime */
+  Airing: 'airing',
+  /** Top Upcoming Anime */
+  Upcoming: 'upcoming',
+  /** Top Anime TV Series */
+  TV: 'tv',
+  /** Top Anime OVA Series */
+  OVA: 'ova',
+  /** Top Anime Movies */
+  Movie: 'movie',
+  /** Top Anime Specials */
+  Special: 'special',
+  /** Top Anime by Popularity */
+  ByPopularity: 'bypopularity',
+  /** Top Favorited Anime */
+  Favorite: 'favorite',
+} as const;
+
+export type MalAnimeRankingTypes = (typeof MalAnimeRankingType)[keyof typeof MalAnimeRankingType];
+
+export type MalAnimeRankingRequest = {
+  ranking_type: MalAnimeRankingTypes;
+  nsfw?: boolean;
+  fields?: MalAnimeFields<MalAnime>;
+} & MalApiPagination;
+
+export type MalAnimeRankingResponse = MalApiPaginatedData<{ node: MalAnime; ranking: MalAnimeRanking }>;
+
+export const MalAnimeSort = {
+  /** In descending order of score. */
+  AnimeScore: 'anime_score',
+  /** In descending order of the number of list users. */
+  AnimeNumListUsers: 'anime_num_list_users',
+} as const;
+
+export type MalAnimeSorts = (typeof MalAnimeSort)[keyof typeof MalAnimeSort];
+
+export type MalAnimeSeasonalRequest = {
+  year: number;
+  season: MalAnimeSeasons;
+  sort?: MalAnimeSorts;
+  nsfw?: boolean;
+  fields?: MalAnimeFields<MalAnime>;
+} & MalApiPagination;
+
+export type MalAnimeSeasonalResponse = MalApiPaginatedData<{ node: MalAnime }> & { season: MalAnimeSeasonStart };
+
+export type MalAnimeSuggestionsRequest = {
+  nsfw?: boolean;
+  fields?: MalAnimeFields<MalAnime>;
 } & MalApiPagination;

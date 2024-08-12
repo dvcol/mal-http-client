@@ -64,13 +64,13 @@ export type MalApiPagination = {
   limit: number;
 };
 
-export type MalApiPaginatedData<T = unknown> = {
+export type MalApiPaginatedData<T = unknown, Meta = Record<string, never>> = {
   data: T;
   pagination: {
     previous?: MalApiPagination & { link: string };
     next?: MalApiPagination & { link: string };
   };
-};
+} & Meta;
 
 export type MalAnimeFields<T extends RecursiveRecord> =
   | string
@@ -105,6 +105,8 @@ export type MalApiTemplateOptions<T extends string | number | symbol = string> =
   version: ApiVersions;
   /** If the method requires authentication */
   auth?: MalAuthTypes | false;
+  /** If the method supports/requires nsfw filters */
+  nsfw?: boolean;
   /** If the method supports/requires pagination */
   pagination?:
     | {
@@ -114,8 +116,6 @@ export type MalApiTemplateOptions<T extends string | number | symbol = string> =
         limit?: number;
       }
     | false;
-  /** If the method supports/requires nsfw filters */
-  nsfw?: boolean;
 };
 
 export type MalApiTemplate<Parameter extends MalApiParam = MalApiParam> = BaseTemplate<Parameter, MalApiTemplateOptions<keyof Parameter>>;
