@@ -5,6 +5,7 @@ import { ApiVersion } from '~/models/mal-client.model';
  */
 export const Config = {
   endpoint: 'https://api.myanimelist.net',
+  website: 'https://myanimelist.net',
   version: ApiVersion,
   /**
    * Access Token lifetime in seconds (1 hour).

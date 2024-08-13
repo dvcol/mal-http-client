@@ -2,6 +2,7 @@ import { HttpMethod } from '@dvcol/common-utils';
 
 import type { MalAuthenticationToken, MalAuthorizeRequest, MalTokenExchangeRequest, MalTokenRefreshRequest } from '~/models/mal-authentication.model';
 
+import { Config } from '~/config';
 import { ApiVersion, MalClientEndpoint } from '~/models/mal-client.model';
 
 /**
@@ -24,6 +25,7 @@ export const authentication = {
     },
     opts: {
       version: ApiVersion.v1,
+      endpoint: Config.website,
       cache: false,
       parameters: {
         query: {
@@ -50,6 +52,7 @@ export const authentication = {
       },
       opts: {
         version: ApiVersion.v1,
+        endpoint: Config.website,
         cache: false,
       },
       body: {
@@ -72,6 +75,7 @@ export const authentication = {
       },
       opts: {
         version: ApiVersion.v1,
+        endpoint: Config.website,
         cache: false,
       },
       body: {

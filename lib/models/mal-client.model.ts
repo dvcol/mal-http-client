@@ -121,6 +121,8 @@ export type MalAuthTypes = (typeof MalAuthType)[keyof typeof MalAuthType];
 export type MalApiTemplateOptions<T extends string | number | symbol = string> = BaseTemplateOptions<T, boolean> & {
   /** The API version to use */
   version: ApiVersions;
+  /** Optional endpoint override */
+  endpoint?: string;
   /** If the method requires authentication */
   auth?: MalAuthTypes | false;
   /** If the method supports/requires nsfw filters */

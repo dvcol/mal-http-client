@@ -1,6 +1,6 @@
 import { type BaseBody, BaseClient } from '@dvcol/base-http-client';
 
-import { injectCorsProxyPrefix, injectUrlPrefix, parseBody, parseUrl, patchResponse } from '@dvcol/base-http-client/utils/client';
+import { injectCorsProxyPrefix, injectUrlPrefix, parseBodyUrlEncoded, parseUrl, patchResponse } from '@dvcol/base-http-client/utils/client';
 import { BaseApiHeaders, BaseHeaderContentType } from '@dvcol/base-http-client/utils/http';
 
 import { HttpMethod } from '@dvcol/common-utils';
@@ -86,7 +86,9 @@ export class BaseMalClient extends BaseClient<MalApiQuery, MalApiResponse, MalCl
   protected _parseHeaders<T extends MalApiParams = MalApiParams>(template: MalApiTemplate<T>): HeadersInit {
     const headers: HeadersInit = {
       [BaseApiHeaders.UserAgent]: this.settings.useragent,
-      [BaseApiHeaders.ContentType]: template.method === HttpMethod.POST ? BaseHeaderContentType.FormUrlEncoded : BaseHeaderContentType.Json,
+      [BaseApiHeaders.ContentType]: [HttpMethod.POST, HttpMethod.PUT, HttpMethod.PATCH].map(String).includes(template.method)
+        ? BaseHeaderContentType.FormUrlEncoded
+        : BaseHeaderContentType.Json,
       [MalApiHeader.MalClientId]: this.settings.client_id,
       [MalApiHeader.MalApiVersion]: template.opts?.version,
     };
@@ -116,6 +118,7 @@ export class BaseMalClient extends BaseClient<MalApiQuery, MalApiResponse, MalCl
    */
   protected _parseUrl<T extends MalApiParams = MalApiParams>(template: MalApiTemplate<T>, params: T): URL {
     const versionedTemplate = injectUrlPrefix(`/${template.opts.version}`, template);
+    if (template.opts.endpoint) return parseUrl<T>(versionedTemplate, params, template.opts.endpoint);
     const _template = injectCorsProxyPrefix(versionedTemplate, this.settings);
     return parseUrl<T>(_template, params, this.settings.endpoint);
   }
@@ -134,7 +137,7 @@ export class BaseMalClient extends BaseClient<MalApiQuery, MalApiResponse, MalCl
    */
   // eslint-disable-next-line class-methods-use-this -- implemented from abstract class
   protected _parseBody<T extends MalApiParams = MalApiParams>(template: BaseBody<string | keyof T>, params: T): BodyInit {
-    return parseBody(template, params);
+    return parseBodyUrlEncoded(template, params);
   }
 
   /**

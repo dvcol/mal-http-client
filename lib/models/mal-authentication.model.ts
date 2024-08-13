@@ -40,7 +40,7 @@ export class MalClientAuthentication implements IMalClientAuthentication {
       this.created = authentication.created;
       this.expires = authentication.expires;
       this.state = authentication.state ?? state;
-      this.code = authentication.code;
+      this.code = authentication.code ?? code;
     }
   }
 

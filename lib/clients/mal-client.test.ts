@@ -166,7 +166,7 @@ describe('mal-client.ts', () => {
     it('should redirect to authorization url', async () => {
       expect.assertions(1);
 
-      const url = new URL(`/v1/oauth2/authorize`, malClientSettingsMock.endpoint);
+      const url = new URL(`/v1/oauth2/authorize`, malApi.authentication.authorize.opts.endpoint);
       url.searchParams.append('client_id', malClientSettingsMock.client_id);
       url.searchParams.append('code_challenge', code_challenge);
       url.searchParams.append('state', state);
@@ -193,7 +193,7 @@ describe('mal-client.ts', () => {
 
       await malClient.exchangeCodeForToken({ code, code_verifier });
 
-      expect(fetch).toHaveBeenCalledWith(new URL('/v1/oauth2/token', malClientSettingsMock.endpoint).toString(), {
+      expect(fetch).toHaveBeenCalledWith(new URL('/v1/oauth2/token', malApi.authentication.authorize.opts.endpoint).toString(), {
         ...payload,
         headers: {
           ...payload.headers,
@@ -201,7 +201,7 @@ describe('mal-client.ts', () => {
           [MalApiHeader.MalApiVersion]: ApiVersion.v1,
         },
         method: HttpMethod.POST,
-        body: JSON.stringify({
+        body: new URLSearchParams({
           grant_type: 'authorization_code',
           code,
           client_id: malClientSettingsMock.client_id,
@@ -240,7 +240,7 @@ describe('mal-client.ts', () => {
 
       await malClient.refreshAccessToken();
 
-      expect(fetch).toHaveBeenCalledWith(new URL('/v1/oauth2/token', malClientSettingsMock.endpoint).toString(), {
+      expect(fetch).toHaveBeenCalledWith(new URL('/v1/oauth2/token', malApi.authentication.authorize.opts.endpoint).toString(), {
         ...payload,
         headers: {
           ...payload.headers,
@@ -248,7 +248,7 @@ describe('mal-client.ts', () => {
           [MalApiHeader.MalApiVersion]: ApiVersion.v1,
         },
         method: HttpMethod.POST,
-        body: JSON.stringify({
+        body: new URLSearchParams({
           grant_type: 'refresh_token',
           refresh_token: authentication.refresh_token,
           client_id: malClientSettingsMock.client_id,
@@ -264,7 +264,7 @@ describe('mal-client.ts', () => {
 
       await malClient.importAuthentication({ ...clientAuthentication, expires: new Date().getTime() - 10000 });
 
-      expect(fetch).toHaveBeenCalledWith(new URL('/v1/oauth2/token', malClientSettingsMock.endpoint).toString(), {
+      expect(fetch).toHaveBeenCalledWith(new URL('/v1/oauth2/token', malApi.authentication.authorize.opts.endpoint).toString(), {
         ...payload,
         headers: {
           ...payload.headers,
@@ -272,7 +272,7 @@ describe('mal-client.ts', () => {
           [MalApiHeader.MalApiVersion]: ApiVersion.v1,
         },
         method: HttpMethod.POST,
-        body: JSON.stringify({
+        body: new URLSearchParams({
           grant_type: 'refresh_token',
           refresh_token: authentication.refresh_token,
           client_id: malClientSettingsMock.client_id,

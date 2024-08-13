@@ -130,7 +130,7 @@ describe('base-mal-client.ts', () => {
       expect.assertions(1);
 
       const result = client.publicParseBody<MalApiParams>(mockTemplate.body!, mockParams);
-      expect(result).toBe('{"requiredBody":"requiredBody"}');
+      expect(result).toStrictEqual(new URLSearchParams({ requiredBody: 'requiredBody' }));
     });
 
     it('should parse body to JSON string', () => {
@@ -210,9 +210,9 @@ describe('base-mal-client.ts', () => {
     expect(spyFetch).toHaveBeenCalledWith(
       `${malClientSettingsMock.endpoint}/${mockTemplate.opts.version}/manga/requiredPath/popular?requiredQuery=requiredQuery&optionalQuery=optionalQuery`,
       {
-        body: '{"requiredBody":"requiredBody"}',
+        body: new URLSearchParams({ requiredBody: 'requiredBody' }),
         headers: {
-          [BaseApiHeaders.ContentType]: BaseHeaderContentType.Json,
+          [BaseApiHeaders.ContentType]: BaseHeaderContentType.FormUrlEncoded,
           [BaseApiHeaders.UserAgent]: malClientSettingsMock.useragent,
           [MalApiHeader.MalClientId]: malClientSettingsMock.client_id,
           [MalApiHeader.MalApiVersion]: mockTemplate.opts?.version,
@@ -239,9 +239,9 @@ describe('base-mal-client.ts', () => {
     expect(spyFetch).toHaveBeenCalledWith(
       `${malClientSettingsMock.endpoint}/${mockTemplate.opts.version}/manga/requiredPath/popular?requiredQuery=requiredQuery&optionalQuery=optionalQuery`,
       {
-        body: '{"requiredBody":"requiredBody"}',
+        body: new URLSearchParams({ requiredBody: 'requiredBody' }),
         headers: {
-          [BaseApiHeaders.ContentType]: BaseHeaderContentType.Json,
+          [BaseApiHeaders.ContentType]: BaseHeaderContentType.FormUrlEncoded,
           [BaseApiHeaders.UserAgent]: malClientSettingsMock.useragent,
           [MalApiHeader.MalClientId]: malClientSettingsMock.client_id,
           [MalApiHeader.MalApiVersion]: mockTemplate.opts?.version,
