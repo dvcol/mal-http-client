@@ -1,36 +1,6 @@
 import type { MalApiFields, MalApiPaginatedData, MalApiPagination } from '~/models/mal-client.model';
 
-export const NsfwType = {
-  /** This work is safe for work */
-  White: 'white',
-  /** This work may be not safe for work */
-  Gray: 'gray',
-  /** This work is not safe for work */
-  Black: 'black',
-} as const;
-
-/**
- * - white:	This work is safe for work
- * - gray:	This work may be not safe for work
- * - black:	This work is not safe for work
- */
-export type NsfwTypes = (typeof NsfwType)[keyof typeof NsfwType];
-
-export type MalAnimePicture = {
-  medium: string;
-  large?: string;
-};
-
-export type MalAnimeAlternativeTitles = {
-  synonyms: string[];
-  en?: string;
-  ja?: string;
-};
-
-export type MalAnimeGenre = {
-  id: number;
-  name: string;
-};
+import type { MalBaseEntity, MalListStatuses, MalPicture, MalRanking, MalRecommendation, MalRelatedEntity } from '~/models/mal-common.model';
 
 export const MalAnimeType = {
   Unknown: 'unknown',
@@ -52,18 +22,8 @@ export const MalAnimeStatus = {
 
 export type MalAnimeStatuses = (typeof MalAnimeStatus)[keyof typeof MalAnimeStatus];
 
-export const MalAnimeListStatus = {
-  Watching: 'watching',
-  Completed: 'completed',
-  OnHold: 'on_hold',
-  Dropped: 'dropped',
-  PlanToWatch: 'plan_to_watch',
-} as const;
-
-export type MalAnimeListStatuses = (typeof MalAnimeListStatus)[keyof typeof MalAnimeListStatus];
-
 export type MalAnimeMyListStatus = {
-  status: MalAnimeListStatuses;
+  status: MalListStatuses;
   /** 0-10 */
   score: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
   /** 0 or the number of watched episodes. */
@@ -156,32 +116,7 @@ export type MalAnimeStudio = {
   name: string;
 };
 
-export type MalAnime = {
-  id: number;
-  title: string;
-  main_picture?: MalAnimePicture;
-  alternative_titles?: MalAnimeAlternativeTitles;
-  start_date?: string;
-  end_date?: string;
-  /** The API strips BBCode tags from the result. */
-  synopsis?: string;
-  /**
-   * Mean score.
-   *
-   * When the mean can not be calculated, such as when the number of user scores is small, the result does not include this field.
-   */
-  mean?: number;
-  /**
-   * When the rank can not be calculated, such as when the number of user scores is small, the result does not include this field
-   */
-  rank?: number;
-  popularity?: number;
-  num_list_users?: number;
-  num_scoring_users?: number;
-  nsfw?: NsfwTypes;
-  genres?: MalAnimeGenre[];
-  created_at?: string;
-  updated_at?: string;
+export type MalAnime = MalBaseEntity<{
   media_type?: MalAnimeTypes;
   status?: MalAnimeStatuses;
   /** Status of user's anime list. If there is no access token, the API excludes this field. */
@@ -197,7 +132,7 @@ export type MalAnime = {
   average_episode_duration?: number;
   rating?: MalAnimeRatings;
   studios?: MalAnimeStudio[];
-};
+}>;
 
 /** Default limit is 100, max is 500 */
 export type MalAnimeListRequest = {
@@ -208,73 +143,28 @@ export type MalAnimeListRequest = {
 
 export type MalAnimeListResponse = MalApiPaginatedData<{ node: MalAnime }>;
 
-export const MalRelationType = {
-  Sequel: 'sequel',
-  Prequel: 'prequel',
-  AlternativeSetting: 'alternative_setting',
-  AlternativeVersion: 'alternative_version',
-  SideStory: 'side_story',
-  ParentStory: 'parent_story',
-  Summary: 'summary',
-  FullStory: 'full_story',
-} as const;
-
-export type MalRelationTypes = (typeof MalRelationType)[keyof typeof MalRelationType];
-
-export type MalRelatedAnime = {
-  node: MalAnime;
-  /**
-   * The type of the relationship between this work and related work
-   */
-  relation_type: MalRelationTypes;
-  /** The format of relation_type for human like "Alternative version". */
-  relation_type_formatted: string;
-};
-
-export type MalRelatedManga = {
-  node: MalAnime;
-  /**
-   * The type of the relationship between this work and related work
-   */
-  relation_type: MalRelationTypes;
-  /** The format of relation_type for human like "Alternative version". */
-  relation_type_formatted: string;
-};
-
-export type MalAnimeRecommendation = {
-  node: MalAnime;
-  num_recommendations: number;
-};
-
 export type MalAnimeStatistics = {
   num_list_users: number;
-  status: Record<MalAnimeListStatuses, number>;
+  status: Record<MalListStatuses, number>;
 };
 
 export type MalAnimeDetails = MalAnime & {
-  pictures?: MalAnimePicture[];
+  pictures?: MalPicture[];
   /**
    * The API strips BBCode tags from the result.
    *
    * You cannot contain this field in a list.
    */
   background?: string;
-  related_anime?: MalRelatedAnime[];
-  related_manga?: MalRelatedManga[];
-  recommendations?: MalAnimeRecommendation[];
+  related_anime?: MalRelatedEntity<MalAnime>[];
+  related_manga?: MalRelatedEntity<MalAnime>[];
+  recommendations?: MalRecommendation<MalAnime>[];
   statistics?: MalAnimeStatistics;
 };
 
 export type MalAnimeDetailsRequest = {
   id: string | number;
   fields?: MalApiFields<MalAnimeDetails>;
-};
-
-export type MalAnimeRanking = {
-  /** Current rank of the anime. */
-  rank: number;
-  /** Previous rank of the anime. */
-  previous_rank?: number;
 };
 
 export const MalAnimeRankingType = {
@@ -302,12 +192,12 @@ export type MalAnimeRankingTypes = (typeof MalAnimeRankingType)[keyof typeof Mal
 
 /** Default limit is 100, max is 500 */
 export type MalAnimeRankingRequest = {
-  ranking_type: MalAnimeRankingTypes;
+  ranking_type?: MalAnimeRankingTypes;
   nsfw?: boolean;
   fields?: MalApiFields<MalAnime>;
 } & MalApiPagination;
 
-export type MalAnimeRankingResponse = MalApiPaginatedData<{ node: MalAnime; ranking: MalAnimeRanking }>;
+export type MalAnimeRankingResponse = MalApiPaginatedData<{ node: MalAnime; ranking: MalRanking }>;
 
 export const MalAnimeSort = {
   /** In descending order of score. */
@@ -354,7 +244,7 @@ export type MalAnimeUserListSorts = (typeof MalAnimeUserListSort)[keyof typeof M
 export type MalAnimeUserListRequest = {
   /** User name or @me. */
   user_name: string | '@me';
-  status?: MalAnimeListStatuses;
+  status?: MalListStatuses;
   sort?: MalAnimeUserListSorts;
   nsfw?: boolean;
   fields?: MalApiFields<MalAnime>;

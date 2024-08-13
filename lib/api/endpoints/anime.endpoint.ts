@@ -107,7 +107,7 @@ export const anime = {
       },
       parameters: {
         query: {
-          ranking_type: true,
+          ranking_type: false,
 
           fields: false,
           nsfw: false,
