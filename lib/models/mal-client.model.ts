@@ -59,18 +59,18 @@ export type MalApiRawPaginatedData<T = unknown> = {
 
 export type MalApiPagination = {
   /** Default: 0 */
-  offset: number;
+  offset?: number;
   /** Default: 100 */
-  limit: number;
+  limit?: number;
 };
 
-export type MalApiPaginatedData<T = unknown, Meta = Record<string, never>> = {
+export type MalApiPaginatedData<T = unknown> = {
   data: T;
   pagination: {
     previous?: MalApiPagination & { link: string };
     next?: MalApiPagination & { link: string };
   };
-} & Meta;
+};
 
 export type MalApiFields<T extends RecursiveRecord> =
   | string
@@ -81,10 +81,11 @@ export type MalApiFields<T extends RecursiveRecord> =
 
 export type MalClientOptions = BaseOptions<MalClientSettings, MalApiResponse>;
 
-export type MalApiParam = RecursiveRecord;
+export type MalApiParams = RecursiveRecord;
 
 export const MalApiHeader = {
   MalClientId: 'X-MAL-CLIENT-ID',
+  MalApiVersion: 'X-MAL-API-VERSION',
 } as const;
 
 export type MalApiHeaders = (typeof MalApiHeader)[keyof typeof MalApiHeader];
@@ -135,20 +136,20 @@ export type MalApiTemplateOptions<T extends string | number | symbol = string> =
     | false;
 };
 
-export type MalApiTemplate<Parameter extends MalApiParam = MalApiParam> = BaseTemplate<Parameter, MalApiTemplateOptions<keyof Parameter>>;
+export type MalApiTemplate<Parameter extends MalApiParams = MalApiParams> = BaseTemplate<Parameter, MalApiTemplateOptions<keyof Parameter>>;
 
-export interface MalClientEndpoint<Parameter extends MalApiParam = Record<string, never>, Response = unknown> {
+export interface MalClientEndpoint<Parameter extends MalApiParams = Record<string, never>, Response = unknown> {
   (param?: Parameter, init?: BodyInit): CancellablePromise<MalApiResponse<Response>>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export class MalClientEndpoint<
-  Parameter extends MalApiParam = Record<string, never>,
+  Parameter extends MalApiParams = Record<string, never>,
   Response = unknown,
   Cache extends boolean = true,
 > extends ClientEndpoint<Parameter, Response, Cache, MalApiTemplateOptions<keyof Parameter>> {}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- this is a recursive type
-export type IMalApi<Parameter extends MalApiParam = any, Response = unknown, Cache extends boolean = boolean> = {
+export type IMalApi<Parameter extends MalApiParams = any, Response = unknown, Cache extends boolean = boolean> = {
   [key: string]: MalClientEndpoint<Parameter, Response, Cache> | IMalApi<Parameter>;
 };

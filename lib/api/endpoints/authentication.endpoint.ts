@@ -17,7 +17,10 @@ export const authentication = {
     url: '/oauth2/authorize',
     seed: {
       response_type: 'code',
-      code_challenge_method: 'plain',
+    },
+    init: {
+      redirect: 'manual',
+      credentials: 'omit',
     },
     opts: {
       version: ApiVersion.v1,

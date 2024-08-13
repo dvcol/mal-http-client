@@ -11,7 +11,7 @@ import type { MalApi } from '~/api/mal-api.endpoints';
 import type {
   IMalApi,
   MalApiPaginatedData,
-  MalApiParam,
+  MalApiParams,
   MalApiQuery,
   MalApiRawPaginatedData,
   MalApiResponse,
@@ -41,10 +41,11 @@ const parsePagingLinks = (link: string): { offset: number; limit: number } => {
 
 const isPagedData = <T extends RecursiveRecord = unknown>(data: T | MalApiRawPaginatedData<T>): data is MalApiRawPaginatedData<T> => 'paging' in data;
 
-const parseResponse = <T extends RecursiveRecord = unknown>(response: T | MalApiRawPaginatedData<T>) => {
+export const parseResponse = <T extends RecursiveRecord = unknown>(response: T | MalApiRawPaginatedData<T>) => {
   if (!isPagedData(response)) return response;
   const result: Partial<MalApiPaginatedData> = {
     data: response.data,
+    pagination: {},
   };
   if (response.paging.previous) result.pagination.previous = { ...parsePagingLinks(response.paging.previous), link: response.paging.previous };
   if (response.paging.next) result.pagination.next = { ...parsePagingLinks(response.paging.next), link: response.paging.next };
@@ -84,11 +85,12 @@ export class BaseMalClient extends BaseClient<MalApiQuery, MalApiResponse, MalCl
    *
    * @throws {Error} Throws an error if OAuth is required and the access token is missing.
    */
-  protected _parseHeaders<T extends MalApiParam = MalApiParam>(template: MalApiTemplate<T>): HeadersInit {
+  protected _parseHeaders<T extends MalApiParams = MalApiParams>(template: MalApiTemplate<T>): HeadersInit {
     const headers: HeadersInit = {
       [BaseApiHeaders.UserAgent]: this.settings.useragent,
       [BaseApiHeaders.ContentType]: template.method === HttpMethod.POST ? BaseHeaderContentType.FormUrlEncoded : BaseHeaderContentType.Json,
       [MalApiHeader.MalClientId]: this.settings.client_id,
+      [MalApiHeader.MalApiVersion]: template.opts?.version,
     };
 
     if (template.opts?.auth === MalAuthType.User) {
@@ -114,7 +116,7 @@ export class BaseMalClient extends BaseClient<MalApiQuery, MalApiResponse, MalCl
    *
    * @throws {Error} Throws an error if mandatory parameters are missing or if a filter is not supported.
    */
-  protected _parseUrl<T extends MalApiParam = MalApiParam>(template: MalApiTemplate<T>, params: T): URL {
+  protected _parseUrl<T extends MalApiParams = MalApiParams>(template: MalApiTemplate<T>, params: T): URL {
     if (template.opts?.version && !template.url.startsWith(`/${template.opts.version}`)) template.url = `/${template.opts.version}${template.url}`;
     const _template = injectCorsProxyPrefix(template, this.settings);
     return parseUrl<T>(_template, params, this.settings.endpoint);
@@ -133,7 +135,7 @@ export class BaseMalClient extends BaseClient<MalApiQuery, MalApiResponse, MalCl
    * @returns {BodyInit} The parsed request body.
    */
   // eslint-disable-next-line class-methods-use-this -- implemented from abstract class
-  protected _parseBody<T extends MalApiParam = MalApiParam>(template: BaseBody<string | keyof T>, params: T): BodyInit {
+  protected _parseBody<T extends MalApiParams = MalApiParams>(template: BaseBody<string | keyof T>, params: T): BodyInit {
     return parseBody(template, params);
   }
 
