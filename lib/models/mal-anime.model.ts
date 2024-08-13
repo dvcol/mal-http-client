@@ -1,6 +1,6 @@
 import type { MalApiFields, MalApiPaginatedData, MalApiPagination } from '~/models/mal-client.model';
 
-import type { MalBaseEntity, MalListStatuses, MalPicture, MalRanking, MalRecommendation, MalRelatedEntity } from '~/models/mal-common.model';
+import type { MalAnimeListStatuses, MalBaseEntity, MalPicture, MalRanking, MalRecommendation, MalRelatedEntity } from '~/models/mal-common.model';
 
 export const MalAnimeType = {
   Unknown: 'unknown',
@@ -23,7 +23,7 @@ export const MalAnimeStatus = {
 export type MalAnimeStatuses = (typeof MalAnimeStatus)[keyof typeof MalAnimeStatus];
 
 export type MalAnimeMyListStatus = {
-  status: MalListStatuses;
+  status: MalAnimeListStatuses;
   /** 0-10 */
   score: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
   /** 0 or the number of watched episodes. */
@@ -145,7 +145,7 @@ export type MalAnimeListResponse = MalApiPaginatedData<{ node: MalAnime }>;
 
 export type MalAnimeStatistics = {
   num_list_users: number;
-  status: Record<MalListStatuses, number>;
+  status: Record<MalAnimeListStatuses, number>;
 };
 
 export type MalAnimeDetails = MalAnime & {
@@ -244,7 +244,7 @@ export type MalAnimeUserListSorts = (typeof MalAnimeUserListSort)[keyof typeof M
 export type MalAnimeUserListRequest = {
   /** User name or @me. */
   user_name: string | '@me';
-  status?: MalListStatuses;
+  status?: MalAnimeListStatuses;
   sort?: MalAnimeUserListSorts;
   nsfw?: boolean;
   fields?: MalApiFields<MalAnime>;

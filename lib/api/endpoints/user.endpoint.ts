@@ -6,6 +6,13 @@ import type {
   MalAnimeUserListResponse,
   MalAnimeUserListUpdateRequest,
 } from '~/models/mal-anime.model';
+
+import type {
+  MalMangaMyListStatus,
+  MalMangaUserListRequest,
+  MalMangaUserListResponse,
+  MalMangaUserListUpdateRequest,
+} from '~/models/mal-manga.model';
 import type { MalUser, MalUserRequest } from '~/models/mal-user.model';
 
 import { MalApiTransforms } from '~/api/transforms/mal-api.transforms';
@@ -48,7 +55,7 @@ export const user = {
       /**
        * Get the user's anime list.
        *
-       * @auth user
+       * @auth user or client
        * @pagination true
        * @nsfw true
        *
@@ -62,7 +69,7 @@ export const user = {
         },
         opts: {
           nsfw: true,
-          auth: MalAuthType.User,
+          auth: MalAuthType.Both,
           version: ApiVersion.v2,
           pagination: {
             limit: 1000,
@@ -108,7 +115,7 @@ export const user = {
         method: HttpMethod.PATCH,
         url: '/anime/:anime_id/my_list_status',
         body: {
-          status: true,
+          status: false,
           is_rewatching: false,
           score: false,
           num_watched_episodes: false,
@@ -155,6 +162,116 @@ export const user = {
           parameters: {
             path: {
               anime_id: true,
+            },
+          },
+        },
+      }),
+    },
+    manga: {
+      /**
+       * Get the user's manga list.
+       *
+       * @auth user or client
+       * @pagination true
+       * @nsfw true
+       *
+       * @see [user-manga-list]{@link https://myanimelist.net/apiconfig/references/api/v2#operation/users_user_id_mangalist_get}
+       */
+      get: new MalClientEndpoint<MalMangaUserListRequest, MalMangaUserListResponse>({
+        method: HttpMethod.GET,
+        url: '/users/:user_name/mangalist',
+        seed: {
+          user_name: '@me',
+        },
+        opts: {
+          nsfw: true,
+          auth: MalAuthType.Both,
+          version: ApiVersion.v2,
+          pagination: {
+            limit: 1000,
+            offset: 0,
+          },
+          parameters: {
+            path: {
+              user_name: true,
+            },
+            query: {
+              status: false,
+              sort: false,
+
+              fields: false,
+              nsfw: false,
+              limit: false,
+              offset: false,
+            },
+          },
+        },
+        transform: param => {
+          if (param.fields) return { ...param, fields: MalApiTransforms.fields(param.fields) };
+          return param;
+        },
+        validate: param => {
+          if (param.limit) MalApiValidators.minMax(param.limit, { min: 0, max: 1000, name: 'limit' });
+          if (param.offset) MalApiValidators.min(param.offset, { min: 0, name: 'offset' });
+          return true;
+        },
+      }),
+      /**
+       * Add specified manga to my manga list.
+       *
+       * If specified manga already exists, update its status.
+       *
+       * This endpoint updates only values specified by the parameter.
+       *
+       * @auth user
+       *
+       * @see [user-update-manga-list]{@link https://myanimelist.net/apiconfig/references/api/v2#operation/manga_manga_id_my_list_status_put}
+       */
+      update: new MalClientEndpoint<MalMangaUserListUpdateRequest, MalMangaMyListStatus, false>({
+        method: HttpMethod.PATCH,
+        url: '/manga/:manga_id/my_list_status',
+        body: {
+          status: false,
+          is_rereading: false,
+          score: false,
+          num_volumes_read: false,
+          num_chapters_read: false,
+          priority: false,
+          num_times_reread: false,
+          reread_value: false,
+          tags: false,
+          comments: false,
+        },
+        opts: {
+          cache: false,
+          auth: MalAuthType.User,
+          version: ApiVersion.v2,
+          parameters: {
+            path: {
+              manga_id: true,
+            },
+          },
+        },
+      }),
+      /**
+       * @see [user-delete-manga-list]{@link https://myanimelist.net/apiconfig/references/api/v2#operation/manga_manga_id_my_list_status_delete}
+       */
+      delete: new MalClientEndpoint<
+        {
+          manga_id: string | number;
+        },
+        unknown,
+        false
+      >({
+        method: HttpMethod.DELETE,
+        url: '/manga/:manga_id/my_list_status',
+        opts: {
+          cache: false,
+          auth: MalAuthType.User,
+          version: ApiVersion.v2,
+          parameters: {
+            path: {
+              manga_id: true,
             },
           },
         },

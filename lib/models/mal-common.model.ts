@@ -28,7 +28,7 @@ export type MalAlternativeTitles = {
   ja?: string;
 };
 
-export const MalListStatus = {
+export const MalAnimeListStatus = {
   Watching: 'watching',
   Completed: 'completed',
   OnHold: 'on_hold',
@@ -36,7 +36,7 @@ export const MalListStatus = {
   PlanToWatch: 'plan_to_watch',
 } as const;
 
-export type MalListStatuses = (typeof MalListStatus)[keyof typeof MalListStatus];
+export type MalAnimeListStatuses = (typeof MalAnimeListStatus)[keyof typeof MalAnimeListStatus];
 
 export type MalGenre = {
   id: number;

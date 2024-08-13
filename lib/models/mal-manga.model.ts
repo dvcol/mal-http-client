@@ -128,16 +128,6 @@ export type MalMangaDetailsRequest = {
   fields?: MalApiFields<MalMangaDetails>;
 };
 
-// all	All
-// manga	Top Manga
-// novels	Top Novels
-// oneshots	Top One-shots
-// doujin	Top Doujinshi
-// manhwa	Top Manhwa
-// manhua	Top Manhua
-// bypopularity	Most Popular
-// favorite	Most Favorited
-
 export const MalMangaRankingType = {
   /** All */
   All: 'all',
@@ -168,3 +158,49 @@ export type MalMangaRankingRequest = {
 } & MalApiPagination;
 
 export type MalMangaRankingResponse = MalApiPaginatedData<{ node: MalManga; ranking: MalRanking }>;
+
+export const MalMangaListSort = {
+  /** Descending order of the score. */
+  ListScore: 'list_score',
+  /** Descending order of the updated date. */
+  ListUpdatedAt: 'list_updated_at',
+  /** Ascending order of manga title. */
+  MangaTitle: 'manga_title',
+  /** Descending order of start date */
+  MangaStartDate: 'manga_start_date',
+  /** Ascending order of anime Id */
+  MangaId: 'manga_id',
+} as const;
+
+export type MalMangaListSorts = (typeof MalMangaListSort)[keyof typeof MalMangaListSort];
+
+/** Default limit is 100, max is 1000 */
+export type MalMangaUserListRequest = {
+  /** User name or @me. */
+  user_name: string | '@me';
+  status?: MalMangaListStatuses;
+  sort?: MalMangaListSorts;
+  nsfw?: boolean;
+  fields?: MalApiFields<MalManga>;
+} & MalApiPagination;
+
+export type MalMangaUserListResponse = MalApiPaginatedData<{ node: MalManga; list_status: MalMangaMyListStatus }>;
+
+export type MalMangaUserListUpdateRequest = {
+  manga_id: string | number;
+  num_watched_episodes?: number;
+} & Partial<
+  Pick<
+    MalMangaMyListStatus,
+    | 'status'
+    | 'is_rereading'
+    | 'score'
+    | 'num_volumes_read'
+    | 'num_chapters_read'
+    | 'priority'
+    | 'num_times_reread'
+    | 'reread_value'
+    | 'tags'
+    | 'comments'
+  >
+>;
