@@ -1,5 +1,4 @@
-import { BaseHeaderContentType } from '@dvcol/base-http-client';
-import { BaseApiHeaders } from '@dvcol/base-http-client/utils/http';
+import { BaseApiHeaders, BaseHeaderContentType } from '@dvcol/base-http-client/utils/http';
 import { hasOwnProperty } from '@dvcol/base-http-client/utils/test';
 
 import { HttpMethod } from '@dvcol/common-utils/http';

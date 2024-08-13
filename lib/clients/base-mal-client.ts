@@ -1,6 +1,6 @@
 import { type BaseBody, BaseClient } from '@dvcol/base-http-client';
 
-import { injectCorsProxyPrefix, parseBody, parseUrl, patchResponse } from '@dvcol/base-http-client/utils/client';
+import { injectCorsProxyPrefix, injectUrlPrefix, parseBody, parseUrl, patchResponse } from '@dvcol/base-http-client/utils/client';
 import { BaseApiHeaders, BaseHeaderContentType } from '@dvcol/base-http-client/utils/http';
 
 import { HttpMethod } from '@dvcol/common-utils';
@@ -28,8 +28,6 @@ import { MalExpiredTokenError, MalInvalidParameterError, MalRateLimitError } fro
 /** Needed to type Object assignment */
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging  -- To allow type extension
 export interface BaseMalClient extends MalApi {}
-
-// "https://api.myanimelist.net/v2/anime/search?offset=2&status=not_yet_aired&limit=4&fields=alternative_titles";
 
 const parsePagingLinks = (link: string): { offset: number; limit: number } => {
   const params = new URLSearchParams(link.split('?')[1] ?? link);
@@ -117,8 +115,8 @@ export class BaseMalClient extends BaseClient<MalApiQuery, MalApiResponse, MalCl
    * @throws {Error} Throws an error if mandatory parameters are missing or if a filter is not supported.
    */
   protected _parseUrl<T extends MalApiParams = MalApiParams>(template: MalApiTemplate<T>, params: T): URL {
-    if (template.opts?.version && !template.url.startsWith(`/${template.opts.version}`)) template.url = `/${template.opts.version}${template.url}`;
-    const _template = injectCorsProxyPrefix(template, this.settings);
+    const versionedTemplate = injectUrlPrefix(`/${template.opts.version}`, template);
+    const _template = injectCorsProxyPrefix(versionedTemplate, this.settings);
     return parseUrl<T>(_template, params, this.settings.endpoint);
   }
 
