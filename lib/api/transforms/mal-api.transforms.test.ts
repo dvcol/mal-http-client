@@ -4,7 +4,7 @@ import { MalApiTransforms } from './mal-api.transforms';
 
 import type { MalAnime } from '../../models/mal-anime.model';
 
-import type { MalAnimeFields } from '../../models/mal-client.model';
+import type { MalApiFields } from '../../models/mal-client.model';
 
 describe('mal-api.transforms.ts', () => {
   it('should correctly join array elements with a separator', () => {
@@ -21,14 +21,14 @@ describe('mal-api.transforms.ts', () => {
     it('should return string without transform', () => {
       expect.assertions(1);
 
-      const input: MalAnimeFields<MalAnime> = 'start_date,end_date';
+      const input: MalApiFields<MalAnime> = 'start_date,end_date';
       expect(MalApiTransforms.fields(input)).toBe(input);
     });
 
     it('should return array as joined string', () => {
       expect.assertions(1);
 
-      const input: MalAnimeFields<MalAnime> = ['start_date', 'end_date'];
+      const input: MalApiFields<MalAnime> = ['start_date', 'end_date'];
       const output = 'start_date,end_date';
       expect(MalApiTransforms.fields(input)).toBe(output);
     });
@@ -36,7 +36,7 @@ describe('mal-api.transforms.ts', () => {
     it('should return flat record as joined string', () => {
       expect.assertions(1);
 
-      const input: MalAnimeFields<MalAnime> = {
+      const input: MalApiFields<MalAnime> = {
         start_date: 'start_date',
         end_date: 'end_date',
       };
@@ -47,7 +47,7 @@ describe('mal-api.transforms.ts', () => {
     it('should return nested record as joined string', () => {
       expect.assertions(1);
 
-      const input: MalAnimeFields<MalAnime> = {
+      const input: MalApiFields<MalAnime> = {
         start_date: 'start_date',
         alternative_titles: ['synonyms', 'en'],
       };

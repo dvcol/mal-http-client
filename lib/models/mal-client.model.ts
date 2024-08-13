@@ -72,7 +72,7 @@ export type MalApiPaginatedData<T = unknown, Meta = Record<string, never>> = {
   };
 } & Meta;
 
-export type MalAnimeFields<T extends RecursiveRecord> =
+export type MalApiFields<T extends RecursiveRecord> =
   | string
   | (keyof T)[]
   | Partial<{
@@ -89,9 +89,26 @@ export const MalApiHeader = {
 
 export type MalApiHeaders = (typeof MalApiHeader)[keyof typeof MalApiHeader];
 
+/**
+ * @see [documentation]{@link https://myanimelist.net/apiconfig/references/api/v2#section/Authentication}
+ */
 export const MalAuthType = {
-  Main: 'main_auth',
+  /**
+   * Main auth (user OAuth)
+   *
+   * The API client can see and modify basic profile information and users' list data, post information to MyAnimelist on behalf of users.
+   * @see [documentation]{@link https://myanimelist.net/apiconfig/references/api/v2#section/Authentication}
+   **/
+  User: 'main_auth',
+  /**
+   * When user login is not required, the X-MAL-CLIENT-ID request header can be used to authenticate the client by setting your API client ID.
+   * @see [documentation]{@link https://myanimelist.net/apiconfig/references/api/v2#section/Authentication}
+   */
   Client: 'client_auth',
+  /**
+   * Either {@link User} or {@link Client} auth
+   * @see [documentation]{@link https://myanimelist.net/apiconfig/references/api/v2#section/Authentication}
+   */
   Both: 'both_auth',
 } as const;
 

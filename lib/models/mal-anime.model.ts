@@ -1,4 +1,4 @@
-import type { MalAnimeFields, MalApiPaginatedData, MalApiPagination } from '~/models/mal-client.model';
+import type { MalApiFields, MalApiPaginatedData, MalApiPagination } from '~/models/mal-client.model';
 
 export const NsfwType = {
   /** This work is safe for work */
@@ -74,15 +74,15 @@ export type MalAnimeMyListStatus = {
    * In this case, MyAnimeList treats the anime as 'watching' in the user's anime list.
    */
   is_rewatching: boolean;
-  start_date: string;
-  finish_date: string;
-  priority: number;
-  num_times_rewatched: number;
-  rewatch_value: number;
-  tags: string[];
+  start_date?: string;
+  finish_date?: string;
+  updated_at?: string;
+  priority?: number;
+  num_times_rewatched?: number;
+  rewatch_value?: number;
+  tags?: string[];
   /** You cannot contain this field in a list. */
   comments?: string;
-  updated_at: string;
 };
 
 export const MalAnimeSeason = {
@@ -199,10 +199,11 @@ export type MalAnime = {
   studios?: MalAnimeStudio[];
 };
 
+/** Default limit is 100, max is 500 */
 export type MalAnimeListRequest = {
   q: string;
   nsfw?: boolean;
-  fields?: MalAnimeFields<MalAnime>;
+  fields?: MalApiFields<MalAnime>;
 } & MalApiPagination;
 
 export type MalAnimeListResponse = MalApiPaginatedData<{ node: MalAnime }>;
@@ -266,7 +267,7 @@ export type MalAnimeDetails = MalAnime & {
 
 export type MalAnimeDetailsRequest = {
   id: string | number;
-  fields?: MalAnimeFields<MalAnimeDetails>;
+  fields?: MalApiFields<MalAnimeDetails>;
 };
 
 export type MalAnimeRanking = {
@@ -299,10 +300,11 @@ export const MalAnimeRankingType = {
 
 export type MalAnimeRankingTypes = (typeof MalAnimeRankingType)[keyof typeof MalAnimeRankingType];
 
+/** Default limit is 100, max is 500 */
 export type MalAnimeRankingRequest = {
   ranking_type: MalAnimeRankingTypes;
   nsfw?: boolean;
-  fields?: MalAnimeFields<MalAnime>;
+  fields?: MalApiFields<MalAnime>;
 } & MalApiPagination;
 
 export type MalAnimeRankingResponse = MalApiPaginatedData<{ node: MalAnime; ranking: MalAnimeRanking }>;
@@ -316,17 +318,56 @@ export const MalAnimeSort = {
 
 export type MalAnimeSorts = (typeof MalAnimeSort)[keyof typeof MalAnimeSort];
 
+/** Default limit is 100, max is 500 */
 export type MalAnimeSeasonalRequest = {
   year: number;
   season: MalAnimeSeasons;
   sort?: MalAnimeSorts;
   nsfw?: boolean;
-  fields?: MalAnimeFields<MalAnime>;
+  fields?: MalApiFields<MalAnime>;
 } & MalApiPagination;
 
 export type MalAnimeSeasonalResponse = MalApiPaginatedData<{ node: MalAnime }> & { season: MalAnimeSeasonStart };
 
+/** Default limit is 100, max is 500 */
 export type MalAnimeSuggestionsRequest = {
   nsfw?: boolean;
-  fields?: MalAnimeFields<MalAnime>;
+  fields?: MalApiFields<MalAnime>;
 } & MalApiPagination;
+
+export const MalAnimeUserListSort = {
+  /** Descending order of the score. */
+  ListScore: 'list_score',
+  /** Descending order of the updated date. */
+  ListUpdatedAt: 'list_updated_at',
+  /** Ascending order of anime title. */
+  AnimeTitle: 'anime_title',
+  /** Descending order of start date */
+  AnimeStartDate: 'anime_start_date',
+  /** Ascending order of anime Id */
+  AnimeId: 'anime_id',
+} as const;
+
+export type MalAnimeUserListSorts = (typeof MalAnimeUserListSort)[keyof typeof MalAnimeUserListSort];
+
+/** Default limit is 100, max is 1000 */
+export type MalAnimeUserListRequest = {
+  /** User name or @me. */
+  user_name: string | '@me';
+  status?: MalAnimeListStatuses;
+  sort?: MalAnimeUserListSorts;
+  nsfw?: boolean;
+  fields?: MalApiFields<MalAnime>;
+} & MalApiPagination;
+
+export type MalAnimeUserListResponse = MalApiPaginatedData<{ node: MalAnime; list_status: MalAnimeMyListStatus }>;
+
+export type MalAnimeUserListUpdateRequest = {
+  anime_id: string | number;
+  num_watched_episodes?: number;
+} & Partial<
+  Pick<
+    MalAnimeMyListStatus,
+    'status' | 'is_rewatching' | 'score' | 'num_episodes_watched' | 'priority' | 'num_times_rewatched' | 'rewatch_value' | 'tags' | 'comments'
+  >
+>;

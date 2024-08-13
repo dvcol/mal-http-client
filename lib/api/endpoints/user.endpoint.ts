@@ -1,0 +1,164 @@
+import { HttpMethod } from '@dvcol/common-utils';
+
+import type {
+  MalAnimeMyListStatus,
+  MalAnimeUserListRequest,
+  MalAnimeUserListResponse,
+  MalAnimeUserListUpdateRequest,
+} from '~/models/mal-anime.model';
+import type { MalUser, MalUserRequest } from '~/models/mal-user.model';
+
+import { MalApiTransforms } from '~/api/transforms/mal-api.transforms';
+import { MalApiValidators } from '~/api/validators/mal-api.validators';
+import { ApiVersion, MalAuthType, MalClientEndpoint } from '~/models/mal-client.model';
+
+export const user = {
+  /**
+   * Get user information.
+   *
+   * @auth user
+   *
+   * @see [user-info]{@link https://myanimelist.net/apiconfig/references/api/v2#operation/users_user_id_get}
+   */
+  info: new MalClientEndpoint<MalUserRequest, MalUser>({
+    method: HttpMethod.GET,
+    url: '/users/:id',
+    seed: {
+      id: '@me',
+    },
+    opts: {
+      auth: MalAuthType.User,
+      version: ApiVersion.v2,
+      parameters: {
+        path: {
+          id: true,
+        },
+        query: {
+          fields: false,
+        },
+      },
+    },
+    transform: param => {
+      if (param.fields) return { ...param, fields: MalApiTransforms.fields(param.fields) };
+      return param;
+    },
+  }),
+  list: {
+    anime: {
+      /**
+       * Get the user's anime list.
+       *
+       * @auth user
+       * @pagination true
+       * @nsfw true
+       *
+       * @see [user-anime-list]{@link https://myanimelist.net/apiconfig/references/api/v2#operation/users_user_id_animelist_get}
+       */
+      get: new MalClientEndpoint<MalAnimeUserListRequest, MalAnimeUserListResponse>({
+        method: HttpMethod.GET,
+        url: '/users/:user_name/animelist',
+        seed: {
+          user_name: '@me',
+        },
+        opts: {
+          nsfw: true,
+          auth: MalAuthType.User,
+          version: ApiVersion.v2,
+          pagination: {
+            limit: 1000,
+            offset: 0,
+          },
+          parameters: {
+            path: {
+              user_name: true,
+            },
+            query: {
+              status: false,
+              sort: false,
+
+              fields: false,
+              nsfw: false,
+              limit: false,
+              offset: false,
+            },
+          },
+        },
+        transform: param => {
+          if (param.fields) return { ...param, fields: MalApiTransforms.fields(param.fields) };
+          return param;
+        },
+        validate: param => {
+          if (param.limit) MalApiValidators.minMax(param.limit, { min: 0, max: 1000, name: 'limit' });
+          if (param.offset) MalApiValidators.min(param.offset, { min: 0, name: 'offset' });
+          return true;
+        },
+      }),
+      /**
+       * Add specified anime to my anime list.
+       *
+       * If specified anime already exists, update its status.
+       *
+       * This endpoint updates only values specified by the parameter.
+       *
+       * @auth user
+       *
+       * @see [user-update-list]{@link https://myanimelist.net/apiconfig/references/api/v2#operation/anime_anime_id_my_list_status_put}
+       */
+      update: new MalClientEndpoint<MalAnimeUserListUpdateRequest, MalAnimeMyListStatus, false>({
+        method: HttpMethod.PATCH,
+        url: '/anime/:anime_id/my_list_status',
+        body: {
+          status: true,
+          is_rewatching: false,
+          score: false,
+          num_watched_episodes: false,
+          num_episodes_watched: false,
+          priority: false,
+          num_times_rewatched: false,
+          rewatch_value: false,
+          tags: false,
+          comments: false,
+        },
+        opts: {
+          cache: false,
+          auth: MalAuthType.User,
+          version: ApiVersion.v2,
+          parameters: {
+            path: {
+              anime_id: true,
+            },
+          },
+        },
+      }),
+      /**
+       * If the specified anime does not exist in user's anime list, this endpoint does nothing and returns 404 Not Found.
+       *
+       * So be careful when retrying.
+       *
+       * @auth user
+       *
+       * @see [user-delete-list]{@link https://myanimelist.net/apiconfig/references/api/v2#operation/anime_anime_id_my_list_status_delete}
+       */
+      delete: new MalClientEndpoint<
+        {
+          anime_id: string | number;
+        },
+        unknown,
+        false
+      >({
+        method: HttpMethod.DELETE,
+        url: '/anime/:anime_id/my_list_status',
+        opts: {
+          cache: false,
+          auth: MalAuthType.User,
+          version: ApiVersion.v2,
+          parameters: {
+            path: {
+              anime_id: true,
+            },
+          },
+        },
+      }),
+    },
+  },
+};

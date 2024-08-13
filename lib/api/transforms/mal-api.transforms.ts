@@ -1,6 +1,6 @@
 import type { RecursiveRecord } from '@dvcol/common-utils';
 
-import type { MalAnimeFields } from '~/models/mal-client.model';
+import type { MalApiFields } from '~/models/mal-client.model';
 
 export const MalApiTransforms = {
   array: {
@@ -10,7 +10,7 @@ export const MalApiTransforms = {
       return arrayOrString as T;
     },
   },
-  fields: <T extends RecursiveRecord>(fields: MalAnimeFields<T>): string => {
+  fields: <T extends RecursiveRecord>(fields: MalApiFields<T>): string => {
     if (typeof fields === 'string') return fields;
     if (Array.isArray(fields)) return fields.join(',');
     return Object.entries(fields)

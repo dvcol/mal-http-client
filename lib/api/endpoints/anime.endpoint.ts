@@ -17,48 +17,47 @@ import { MalApiValidators } from '~/api/validators/mal-api.validators';
 import { ApiVersion, MalAuthType, MalClientEndpoint } from '~/models/mal-client.model';
 
 export const anime = {
-  list: {
-    /**
-     * Get anime list.
-     *
-     * @pagination true
-     * @nsfw true
-     * @auth client or user
-     *
-     * @see [anime-list]{@link https://myanimelist.net/apiconfig/references/api/v2#operation/anime_get}
-     */
-    get: new MalClientEndpoint<MalAnimeListRequest, MalAnimeListResponse>({
-      method: HttpMethod.GET,
-      url: '/anime',
-      opts: {
-        nsfw: true,
-        auth: MalAuthType.Both,
-        version: ApiVersion.v2,
-        pagination: {
-          limit: 500,
-          offset: 0,
-        },
-        parameters: {
-          query: {
-            q: false,
-            fields: false,
-            nsfw: false,
-            limit: false,
-            offset: false,
-          },
+  /**
+   * Get anime list.
+   *
+   * @pagination true
+   * @nsfw true
+   * @auth client or user
+   *
+   * @see [anime-list]{@link https://myanimelist.net/apiconfig/references/api/v2#operation/anime_get}
+   */
+  list: new MalClientEndpoint<MalAnimeListRequest, MalAnimeListResponse>({
+    method: HttpMethod.GET,
+    url: '/anime',
+    opts: {
+      nsfw: true,
+      auth: MalAuthType.Both,
+      version: ApiVersion.v2,
+      pagination: {
+        limit: 500,
+        offset: 0,
+      },
+      parameters: {
+        query: {
+          q: true,
+          fields: false,
+          nsfw: false,
+          limit: false,
+          offset: false,
         },
       },
-      transform: param => {
-        if (param.fields) return { ...param, fields: MalApiTransforms.fields(param.fields) };
-        return param;
-      },
-      validate: param => {
-        if (param.limit) MalApiValidators.minMax(param.limit, { min: 0, max: 500, name: 'limit' });
-        if (param.offset) MalApiValidators.min(param.offset, { min: 0, name: 'offset' });
-        return true;
-      },
-    }),
-  },
+    },
+    transform: param => {
+      if (param.fields) return { ...param, fields: MalApiTransforms.fields(param.fields) };
+      return param;
+    },
+    validate: param => {
+      if (param.q) MalApiValidators.minLength(param.q, { min: 3, name: 'q' });
+      if (param.limit) MalApiValidators.minMax(param.limit, { min: 0, max: 500, name: 'limit' });
+      if (param.offset) MalApiValidators.min(param.offset, { min: 0, name: 'offset' });
+      return true;
+    },
+  }),
   /**
    * Get anime details.
    *
@@ -109,6 +108,7 @@ export const anime = {
       parameters: {
         query: {
           ranking_type: true,
+
           fields: false,
           nsfw: false,
           limit: false,
@@ -152,6 +152,8 @@ export const anime = {
           season: true,
         },
         query: {
+          sort: false,
+
           fields: false,
           nsfw: false,
           limit: false,
@@ -187,7 +189,7 @@ export const anime = {
     url: '/anime/suggestions',
     opts: {
       nsfw: true,
-      auth: MalAuthType.Main,
+      auth: MalAuthType.User,
       version: ApiVersion.v2,
       pagination: {
         limit: 500,
