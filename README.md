@@ -74,13 +74,12 @@ const malClient = new MalClient(malClientSettings, initAuthentication, malUsedAp
 
 [//]: # (TODO update this section)
 
-* [Built-in cache support](https://github.com/dvcol/mal-http-client/blob/8d9e2fc00154eb50428393cea06b6b69c45282c3/lib/clients/mal-client.test.ts#L69-L145) (per client, endpoint, or query)
-* [Extensible cache store](https://github.com/dvcol/mal-http-client/blob/8d9e2fc00154eb50428393cea06b6b69c45282c3/lib/clients/mal-client.test.ts#L125-L144) (in-memory, local storage, etc.)
+* [Built-in cache support](https://github.com/dvcol/mal-http-client/blob/862718a3a51083a5f63f1ab15cc1e9aaf1b081af/lib/clients/mal-client.test.ts#L79-L155) (per client, endpoint, or query)
+* [Extensible cache store](https://github.com/dvcol/mal-http-client/blob/862718a3a51083a5f63f1ab15cc1e9aaf1b081af/lib/clients/mal-client.test.ts#L135-L154) (in-memory, local storage, etc.)
 * [Event observer](https://github.com/dvcol/base-http-client/blob/ed17c369f3cdf93656568373fc2dba841050e427/lib/client/base-client.test.ts#L486-L575) (request, query, auth)
 * [Built-in cancellation support](https://github.com/dvcol/base-http-client/blob/ed17c369f3cdf93656568373fc2dba841050e427/lib/client/base-client.test.ts#L691-L758)
-* [Code polling authentication](https://github.com/dvcol/mal-http-client/blob/8d9e2fc00154eb50428393cea06b6b69c45282c3/lib/clients/mal-client.test.ts#L147-L237)
-* [Code redirect authentication](https://github.com/dvcol/mal-http-client/blob/8d9e2fc00154eb50428393cea06b6b69c45282c3/lib/clients/mal-client.test.ts#L239-L285)
-* [Token refresh](https://github.com/dvcol/mal-http-client/blob/8d9e2fc00154eb50428393cea06b6b69c45282c3/lib/clients/mal-client.test.ts#L306-L361)
+* [Code redirect authentication](https://github.com/dvcol/mal-http-client/blob/862718a3a51083a5f63f1ab15cc1e9aaf1b081af/lib/clients/mal-client.ts#L40-L130)
+* [Token refresh](https://github.com/dvcol/mal-http-client/blob/862718a3a51083a5f63f1ab15cc1e9aaf1b081af/lib/clients/mal-client.ts#L132-L170)
 
 ### Documentation
 
