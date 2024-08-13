@@ -7,8 +7,8 @@ import { CancellableFetch } from '@dvcol/common-utils/http/fetch';
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { minimalMalApi } from '../api/mal-api-minimal.endpoints';
 import { malApi } from '../api/mal-api.endpoints';
-import { minimalMalApi } from '../api/mal-minimal-api.endpoints';
 
 import { malClientSettingsMock } from '../mocks/mal-settings.mock';
 

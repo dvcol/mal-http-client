@@ -1,2 +1,2 @@
 export * from './base-mal-client';
-export * from './tvdb-client';
+export * from './mal-client';

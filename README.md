@@ -37,8 +37,8 @@ You can also import any [endpoint by common scope](https://github.com/dvcol/mal-
 ```ts
 
 import { MalClient } from '@dvcol/mal-http-client';
+import { anime } from '@dvcol/mal-http-client/api/anime';
 import { minimalMalApi } from '@dvcol/mal-http-client/api/minimal';
-// TODO add your custom endpoints here
  
 import { Config } from '@dvcol/mal-http-client/config';
 
@@ -47,7 +47,7 @@ import type { MalClientSettings } from '@dvcol/mal-http-client/models';
 
 const malUsedApi = {
   ...minimalMalApi,
-  // TODO add your custom endpoints here
+  anime
 };
 
 const malClientSettings: MalClientSettings = {

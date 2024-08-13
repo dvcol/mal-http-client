@@ -38,6 +38,7 @@ describe('base-mal-client.ts', () => {
   const client = new TestableMalClient(malClientSettingsMock);
 
   afterEach(() => {
+    client.publicUpdateAuth({});
     vi.clearAllMocks();
   });
 

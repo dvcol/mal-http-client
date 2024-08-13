@@ -44,6 +44,16 @@
       "import": "./dist/models/index.js",
       "types": "./dist/models/index.d.ts"
     },
+    "./validators": {
+      "require": "./dist/api/validators/mal-api.validators.cjs",
+      "import": "./dist/validators/mal-api.validators.js",
+      "types": "./dist/validators/mal-api.validators.d.ts"
+    },
+    "./transforms": {
+      "require": "./dist/api/transforms/mal-api.transforms.cjs",
+      "import": "./dist/api/transforms/mal-api.transforms.js",
+      "types": "./dist/api/transforms/mal-api.transforms.d.ts"
+    },
     "./api": {
       "require": "./dist/api/mal-api.endpoints.cjs",
       "import": "./dist/api/mal-api.endpoints.js",
@@ -53,6 +63,31 @@
       "require": "./dist/api/mal-api-minimal.endpoints.cjs",
       "import": "./dist/api/mal-api-minimal.endpoints.js",
       "types": "./dist/api/mal-api-minimal.endpoints.d.ts"
+    },
+    "./api/anime": {
+      "require": "./dist/api/endpoints/anime.endpoint.cjs",
+      "import": "./dist/api/endpoints/anime.endpoint.js",
+      "types": "./dist/api/endpoints/anime.endpoint.d.ts"
+    },
+    "./api/authentication": {
+      "require": "./dist/api/endpoints/authentication.endpoint.cjs",
+      "import": "./dist/api/endpoints/authentication.endpoint.js",
+      "types": "./dist/api/endpoints/authentication.endpoint.d.ts"
+    },
+    "./api/forum": {
+      "require": "./dist/api/endpoints/forum.endpoint.cjs",
+      "import": "./dist/api/endpoints/forum.endpoint.js",
+      "types": "./dist/api/endpoints/forum.endpoint.d.ts"
+    },
+    "./api/manga": {
+      "require": "./dist/api/endpoints/manga.endpoint.cjs",
+      "import": "./dist/api/endpoints/manga.endpoint.js",
+      "types": "./dist/api/endpoints/manga.endpoint.d.ts"
+    },
+    "./api/user": {
+      "require": "./dist/api/endpoints/user.endpoint.cjs",
+      "import": "./dist/api/endpoints/user.endpoint.js",
+      "types": "./dist/api/endpoints/user.endpoint.d.ts"
     }
   },
   "files": [
