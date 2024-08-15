@@ -93,6 +93,9 @@ export class BaseMalClient extends BaseClient<MalApiQuery, MalApiResponse, MalCl
       [MalApiHeader.MalApiVersion]: template.opts?.version,
     };
 
+    if (template.opts?.auth === MalAuthType.Client && !this.settings.client_id) {
+      throw new MalInvalidParameterError('OAuth required: client_id is missing');
+    }
     if (template.opts?.auth === MalAuthType.User) {
       if (!this.auth.access_token) throw new MalInvalidParameterError('OAuth required: access_token is missing');
       else if (this.auth.isExpired()) throw new MalExpiredTokenError('OAuth required: access_token has expired');

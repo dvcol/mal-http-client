@@ -7,7 +7,7 @@
   </a>
 </p>
 
-> Simple fetch based http client for mal.tv API with full typescript support (request and response).
+> Simple fetch based http client for the MyAnimeList API with full typescript support (request and response).
 
 ## Prerequisites
 
@@ -83,7 +83,7 @@ const malClient = new MalClient(malClientSettings, initAuthentication, malUsedAp
 
 ### Documentation
 
-See [Mal API documentation](https://mal.docs.apiary.io/) for more information.
+See [Mal API documentation](https://myanimelist.net/apiconfig/references/api/v2) for more information.
 
 ## Author
 

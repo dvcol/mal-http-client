@@ -7,7 +7,6 @@ export const MalValidationErrorTypes = {
 } as const;
 
 export const MalErrorTypes = {
-  MalFilterError: 'MalFilterError',
   MalInvalidParameterError: 'MalInvalidParameterError',
   MalPollingExpiredError: 'MalPollingExpiredError',
   MalExpiredTokenError: 'MalExpiredTokenError',
@@ -48,13 +47,6 @@ export class MalMinMaxValidationError extends MalValidationError {
   readonly type = MalValidationErrorTypes.MalMinMaxValidationError;
   constructor({ value, min, max, name }: { value: string | number; min: number; max: number; name?: string }) {
     super(`Expected a number between '${min}' and '${max}'${name ? ` for '${name}'` : ''}, but received '${value}'.`);
-  }
-}
-
-export class MalFilterError extends Error {
-  constructor(message?: string) {
-    super(message);
-    this.name = MalErrorTypes.MalFilterError;
   }
 }
 
