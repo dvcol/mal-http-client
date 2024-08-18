@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.1](https://github.com/dvcol/mal-http-client/compare/v1.1.0...v1.1.1) (2024-08-18)
+
+
+### Bug Fixes
+
+* **auth:** throw error if client_id is missing ([f75af36](https://github.com/dvcol/mal-http-client/commit/f75af36e92d5fe2afde56c91f9fc7bb3853e38e9))
+* **config:** rename constants ([05dc1f3](https://github.com/dvcol/mal-http-client/commit/05dc1f32cce3883f3d1529d58cbe54970496e98a))
+
 ## 1.1.0 (2024-08-13)
 
 
