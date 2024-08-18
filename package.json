@@ -44,11 +44,6 @@
       "import": "./dist/models/index.js",
       "types": "./dist/models/index.d.ts"
     },
-    "./validators": {
-      "require": "./dist/api/validators/mal-api.validators.cjs",
-      "import": "./dist/validators/mal-api.validators.js",
-      "types": "./dist/validators/mal-api.validators.d.ts"
-    },
     "./transforms": {
       "require": "./dist/api/transforms/mal-api.transforms.cjs",
       "import": "./dist/api/transforms/mal-api.transforms.js",
@@ -111,7 +106,7 @@
   },
   "peerDependencies": {},
   "dependencies": {
-    "@dvcol/base-http-client": "^1.12.2",
+    "@dvcol/base-http-client": "^1.13.1",
     "@dvcol/common-utils": "^1.10.0"
   },
   "devDependencies": {

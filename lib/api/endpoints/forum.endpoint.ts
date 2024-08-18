@@ -1,3 +1,4 @@
+import { ValidatorUtils } from '@dvcol/base-http-client/utils/validator';
 import { HttpMethod } from '@dvcol/common-utils';
 
 import type {
@@ -8,7 +9,6 @@ import type {
   MalForumTopicDetailResponse,
 } from '~/models/mal-forum.model';
 
-import { MalApiValidators } from '~/api/validators/mal-api.validators';
 import { ApiVersion, MalAuthType, MalClientEndpoint } from '~/models/mal-client.model';
 
 export const forum = {
@@ -61,9 +61,9 @@ export const forum = {
         },
       },
       validate: param => {
-        if (param.q) MalApiValidators.minLength(param.q, { min: 3, name: 'q' });
-        if (param.limit) MalApiValidators.minMax(param.limit, { min: 0, max: 100, name: 'limit' });
-        if (param.offset) MalApiValidators.min(param.offset, { min: 0, name: 'offset' });
+        if (param.q) ValidatorUtils.minLength(param.q, { min: 3, name: 'q' });
+        if (param.limit) ValidatorUtils.minMax(param.limit, { min: 0, max: 100, name: 'limit' });
+        if (param.offset) ValidatorUtils.min(param.offset, { min: 0, name: 'offset' });
         return true;
       },
     }),
@@ -96,8 +96,8 @@ export const forum = {
         },
       },
       validate: param => {
-        if (param.limit) MalApiValidators.minMax(param.limit, { min: 0, max: 100, name: 'limit' });
-        if (param.offset) MalApiValidators.min(param.offset, { min: 0, name: 'offset' });
+        if (param.limit) ValidatorUtils.minMax(param.limit, { min: 0, max: 100, name: 'limit' });
+        if (param.offset) ValidatorUtils.min(param.offset, { min: 0, name: 'offset' });
         return true;
       },
     }),

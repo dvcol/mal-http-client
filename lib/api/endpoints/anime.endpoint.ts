@@ -1,3 +1,4 @@
+import { ValidatorUtils } from '@dvcol/base-http-client/utils/validator';
 import { HttpMethod } from '@dvcol/common-utils';
 
 import type {
@@ -13,7 +14,6 @@ import type {
 } from '~/models/mal-anime.model';
 
 import { MalApiTransforms } from '~/api/transforms/mal-api.transforms';
-import { MalApiValidators } from '~/api/validators/mal-api.validators';
 import { ApiVersion, MalAuthType, MalClientEndpoint } from '~/models/mal-client.model';
 
 export const anime = {
@@ -52,9 +52,9 @@ export const anime = {
       return param;
     },
     validate: param => {
-      if (param.q) MalApiValidators.minLength(param.q, { min: 3, name: 'q' });
-      if (param.limit) MalApiValidators.minMax(param.limit, { min: 0, max: 500, name: 'limit' });
-      if (param.offset) MalApiValidators.min(param.offset, { min: 0, name: 'offset' });
+      if (param.q) ValidatorUtils.minLength(param.q, { min: 3, name: 'q' });
+      if (param.limit) ValidatorUtils.minMax(param.limit, { min: 0, max: 500, name: 'limit' });
+      if (param.offset) ValidatorUtils.min(param.offset, { min: 0, name: 'offset' });
       return true;
     },
   }),
@@ -121,8 +121,8 @@ export const anime = {
       return param;
     },
     validate: param => {
-      if (param.limit) MalApiValidators.minMax(param.limit, { min: 0, max: 500, name: 'limit' });
-      if (param.offset) MalApiValidators.min(param.offset, { min: 0, name: 'offset' });
+      if (param.limit) ValidatorUtils.minMax(param.limit, { min: 0, max: 500, name: 'limit' });
+      if (param.offset) ValidatorUtils.min(param.offset, { min: 0, name: 'offset' });
       return true;
     },
   }),
@@ -166,8 +166,8 @@ export const anime = {
       return param;
     },
     validate: param => {
-      if (param.limit) MalApiValidators.minMax(param.limit, { min: 0, max: 500, name: 'limit' });
-      if (param.offset) MalApiValidators.min(param.offset, { min: 0, name: 'offset' });
+      if (param.limit) ValidatorUtils.minMax(param.limit, { min: 0, max: 500, name: 'limit' });
+      if (param.offset) ValidatorUtils.min(param.offset, { min: 0, name: 'offset' });
       return true;
     },
   }),
@@ -209,8 +209,8 @@ export const anime = {
       return param;
     },
     validate: param => {
-      if (param.limit) MalApiValidators.minMax(param.limit, { min: 0, max: 500, name: 'limit' });
-      if (param.offset) MalApiValidators.min(param.offset, { min: 0, name: 'offset' });
+      if (param.limit) ValidatorUtils.minMax(param.limit, { min: 0, max: 500, name: 'limit' });
+      if (param.offset) ValidatorUtils.min(param.offset, { min: 0, name: 'offset' });
       return true;
     },
   }),
