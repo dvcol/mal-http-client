@@ -1,4 +1,7 @@
+import type { MalApiResponse } from '~/models/mal-client.model';
+
 export const MalValidationErrorTypes = {
+  MalApiError: 'MalApiError',
   MalValidationError: 'MalValidationError',
   MalNaNValidationError: 'MalNaNValidationError',
   MalMinValidationError: 'MalMinValidationError',
@@ -14,6 +17,19 @@ export const MalErrorTypes = {
   MalInvalidCsrfError: 'MalInvalidCsrfError',
   ...MalValidationErrorTypes,
 } as const;
+
+export class MalApiError<T = unknown> extends Error {
+  /**
+   * Inner error that this error wraps.
+   */
+  readonly error?: Error | MalApiResponse<T>;
+
+  constructor(message: string, error?: Error | MalApiResponse<T>) {
+    super(message);
+    this.name = MalErrorTypes.MalApiError;
+    this.error = error;
+  }
+}
 
 export class MalValidationError extends Error {
   constructor(message?: string) {
@@ -64,29 +80,17 @@ export class MalPollingExpiredError extends Error {
   }
 }
 
-export class MalExpiredTokenError extends Error {
-  /**
-   * Inner error that this error wraps.
-   */
-  readonly error?: Error | Response;
-
-  constructor(message?: string, error?: Error | Response) {
-    super(message);
+export class MalExpiredTokenError<T = unknown> extends MalApiError<T> {
+  constructor(message?: string, error?: Error | MalApiResponse<T>) {
+    super(message, error);
     this.name = MalErrorTypes.MalExpiredTokenError;
-    this.error = error;
   }
 }
 
-export class MalRateLimitError extends Error {
-  /**
-   * Inner error that this error wraps.
-   */
-  readonly error?: Error | Response;
-
-  constructor(message?: string, error?: Error | Response) {
-    super(message);
+export class MalRateLimitError<T = unknown> extends MalApiError<T> {
+  constructor(message?: string, error?: Error | MalApiResponse<T>) {
+    super(message, error);
     this.name = MalErrorTypes.MalRateLimitError;
-    this.error = error;
   }
 }
 

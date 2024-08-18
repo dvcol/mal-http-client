@@ -25,7 +25,7 @@ export const authentication = {
     },
     opts: {
       version: ApiVersion.v1,
-      endpoint: Config.website,
+      endpoint: Config.Website,
       cache: false,
       parameters: {
         query: {
@@ -52,7 +52,7 @@ export const authentication = {
       },
       opts: {
         version: ApiVersion.v1,
-        endpoint: Config.website,
+        endpoint: Config.Website,
         cache: false,
       },
       body: {
@@ -75,7 +75,7 @@ export const authentication = {
       },
       opts: {
         version: ApiVersion.v1,
-        endpoint: Config.website,
+        endpoint: Config.Website,
         cache: false,
       },
       body: {

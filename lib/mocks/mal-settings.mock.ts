@@ -7,7 +7,7 @@ export const malClientSettingsMock: MalClientSettings = {
   client_secret: 'my-client-secret',
   redirect_uri: 'my-redirect-uri',
 
-  endpoint: Config.endpoint,
+  endpoint: Config.Endpoint,
   TokenTTL: Config.TokenTTL,
   RefreshTokenTTL: Config.RefreshTokenTTL,
 

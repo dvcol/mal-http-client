@@ -4,9 +4,9 @@ import { ApiVersion } from '~/models/mal-client.model';
  * The configuration for the MyAnimeList API.
  */
 export const Config = {
-  endpoint: 'https://api.myanimelist.net',
-  website: 'https://myanimelist.net',
-  version: ApiVersion,
+  Endpoint: 'https://api.myanimelist.net',
+  Website: 'https://myanimelist.net',
+  Version: ApiVersion,
   /**
    * Access Token lifetime in seconds (1 hour).
    * @see [documentation]{@link https://myanimelist.net/apiconfig/references/authorization#overview}

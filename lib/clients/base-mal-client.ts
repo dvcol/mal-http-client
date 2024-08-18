@@ -155,9 +155,9 @@ export class BaseMalClient extends BaseClient<MalApiQuery, MalApiResponse, MalCl
     response: MalApiResponse<T> | MalApiResponse<MalApiRawPaginatedData<T>>,
   ): MalApiResponse {
     if (response.status === 401 && response.headers.get(BaseApiHeaders.Authenticate)?.includes('token expired')) {
-      throw new MalExpiredTokenError('OAuth required: access_token has expired', response);
+      throw new MalExpiredTokenError('OAuth required: access_token has expired', response as MalApiResponse);
     }
-    if (response.status === 429) throw new MalRateLimitError(response.statusText, response);
+    if (response.status === 429) throw new MalRateLimitError(response.statusText, response as MalApiResponse);
     if (!response.ok || response.status >= 400) throw response;
 
     const parsed: MalApiResponse = patchMalResponse(response);
